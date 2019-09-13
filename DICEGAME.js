@@ -2,7 +2,6 @@
 let Grid = [];
 
 let currentDice;
-
 let userCar;
 let compCar1;
 let compCar2;
@@ -12,20 +11,25 @@ let compCar3;
 
 
 window.onload = function(){
-   
-    //document.onkeydown = startGame; 
-    createGrid();
 
-
-   
-
+    OverlayOn();
+    document.onkeydown = OverlayOff;
+    
 
 };
 
-function startGame(){
+function OverlayOn() {
+    document.getElementById("overlay").style.display = "block";
+  }
+  
+function OverlayOff() {
+    document.getElementById("overlay").style.display = "none";
+    startGame();
+}
 
-    //createBoard();
-    document.onkeydown = key_SelectDice;
+function startGame(){
+    createGrid();
+      //document.onkeydown = key_SelectDice;
 }
 
 
@@ -37,24 +41,27 @@ function startGame(){
 
 
 
-
 function createGrid(){
-    //debugger; 
+    
     
     let playZone = document.getElementById("playarea");
     let Arr = [];
     for ( let i = 0 ; i < 4 ; i++ ){
         let col = [];
+        let tile;
         for ( let j = 0 ; j < 100 ; j++ ){
-            let tile = document.createElement("div");
-            tile.setAttribute('class', 'empty');
-            tile.setAttribute('id', `${i},${j}`);
-            playZone.append(tile);
+            tile = new Tile(i,j, false, false, false, false ,false, false, false);
+            //let tile = document.createElement("div");
+            //tile.setAttribute('class', 'empty');
+           // tile.setAttribute('id', `${i},${j}`);
+            //playZone.append(tile);
             col.push(tile);
         }
         Arr.push(col);
     }
-        return Arr;
+    
+        Grid =  Arr;
+        updateView();
 }
 
 
@@ -118,9 +125,49 @@ function getRandomDice(){
 
 
 function updateView(){
+        // console.log(playZone);
+        
+
+        let playZone = document.getElementById("playarea");
+        playZone.innerHTML = null;
+        Grid.forEach(col => {
+            col.forEach(tile => {
+                 var space = document.createElement(tile.element);
+                space.setAttribute('id', tile.id );
+                space.setAttribute("class", "tile");
+
+                playZone.append(space);
+            })
+        })
+    
+    
 
 
 }
+
+
+
+
+
+
+class Tile {
+    constructor(i,j,isUser, isComp1, isComp2, isComp3, isEmpty, isStart, isEnd) {
+        this.id = `${i},${j}`;
+        this.element ="div";
+        this.class = "empty";
+        this.i = i;
+        this.j = j; 
+        this.user = isUser
+        this.comp = isComp1
+        this.comp = isComp2
+        this.comp = isComp3
+        this.empty = isEmpty
+        this.start = isStart
+        this.end = isEnd
+        
+       
+    }
+    }
 
 
 

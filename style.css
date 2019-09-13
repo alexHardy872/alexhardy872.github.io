@@ -59,8 +59,12 @@ body{
     height: 25%;
     width: 1%;
     background-color: rgba(90, 90, 29, 0.726);
-    
+}
 
+.tile{
+    height: 25%;
+    width: 1%;
+    background-color: rgba(145, 145, 0, 0.726);
 }
 
 .user{
@@ -121,6 +125,8 @@ body{
 
 .onDice{
     border: 5px solid rgba(245, 245, 245, 0.685);
+
+    color: white;
 }
 
 
@@ -144,3 +150,38 @@ body{
     font-weight: bold;
 }
 
+#instructions > p {
+    margin-bottom: 0;
+}
+
+
+
+
+/* -------------         OVERLAY ----------------- */
+
+
+#overlay {
+    position: fixed; 
+    display: none; 
+    width: 100%; 
+    height: 100%; 
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.877); 
+    z-index: 99; 
+
+    color: white;
+    
+    text-align: center;
+    padding-top: 20%;
+
+  }
+
+  #overlay > h1 {
+      padding-top: 0;
+    font-size: 48pt;
+  }
+
+  
