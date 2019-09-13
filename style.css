@@ -1,0 +1,146 @@
+html{
+
+}
+
+body{
+    background-color:grey;
+    padding-top: 0;
+    padding-bottom: 10%;
+}
+
+
+
+
+
+.container{
+
+    padding-right: 4%;
+    padding-left: 4%;
+}
+
+.header{
+    position: relative;
+    margin-top: 0%;
+    text-align: center;
+
+}
+
+.centerDiv{
+    text-align: center;
+}
+
+
+
+
+/* -----------------            PLAYMAP     ------------------*/
+
+#playarea {
+    
+    border: 2px solid white;
+    background-color: rgba(77, 76, 76, 0.685);
+    height: 400px;
+    width: 100%px;
+    display: flex;
+    flex-flow: row wrap; 
+    align-content: flex-start;
+      
+}
+
+.pop{
+    background-color: black;
+
+}
+
+
+
+/* ----------------------------  SPACES ------------------- */
+
+.empty{
+    height: 25%;
+    width: 1%;
+    background-color: rgba(90, 90, 29, 0.726);
+    
+
+}
+
+.user{
+
+}
+
+.comp1{
+
+    
+}
+
+.comp2{
+
+}
+
+.comp3{
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+/*           -----------         DICE AREA        --------------      */
+
+#buttonmap{
+    background-color: black;
+    display: flex;
+    justify-content: space-around;
+    /* padding-right: 10%;
+    padding-left: 10%; */
+}
+.dice{
+    font-weight: bold;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    padding-top: 5px;
+    border: 5px solid transparent;
+    font-size: 32pt;
+}
+#one{background-color: teal;}
+#four{background-color:green;}
+#six{background-color:greenyellow;}
+#eight{ background-color:yellow;}
+#ten{background-color:orange}
+#twelve{background-color: orangered}
+#twenty{ background-color: red; }
+#fourty{background-color: purple;}
+
+.onDice{
+    border: 5px solid rgba(245, 245, 245, 0.685);
+}
+
+
+/* ------------             DISPLAY MOVES       ----------------*/
+
+#display {
+    font-weight: bold;
+    font-size: 16pt;
+}
+
+
+
+
+
+/* -----------            INSTRUCTIONS      ---------------*/
+
+#instructions {
+    width: 100%;
+  
+    background-color: rgba(245, 245, 245, 0.473);
+    font-weight: bold;
+}
+
