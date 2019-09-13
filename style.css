@@ -114,14 +114,14 @@ body{
     border: 5px solid transparent;
     font-size: 32pt;
 }
-#one{background-color: teal;}
-#four{background-color:green;}
-#six{background-color:greenyellow;}
-#eight{ background-color:yellow;}
-#ten{background-color:orange}
-#twelve{background-color: orangered}
-#twenty{ background-color: red; }
-#fourty{background-color: purple;}
+#d1{background-color: teal;}
+#d2{background-color:green;}
+#d3{background-color:greenyellow;}
+#d4{ background-color:yellow;}
+#d5{background-color:orange}
+#d6{background-color: orangered}
+#d7{ background-color: red; }
+#d8{background-color: purple;}
 
 .onDice{
     border: 5px solid rgba(245, 245, 245, 0.685);
@@ -176,6 +176,7 @@ body{
     
     text-align: center;
     padding-top: 20%;
+    
 
   }
 

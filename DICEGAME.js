@@ -1,7 +1,9 @@
 
 let Grid = [];
+let DiceSelector = []; 
+//let CurrentDice;
 
-let currentDice;
+
 let userCar;
 let compCar1;
 let compCar2;
@@ -15,21 +17,27 @@ window.onload = function(){
     OverlayOn();
     document.onkeydown = OverlayOff;
     
+    
 
 };
 
 function OverlayOn() {
     document.getElementById("overlay").style.display = "block";
+
   }
   
 function OverlayOff() {
     document.getElementById("overlay").style.display = "none";
+    
     startGame();
+
 }
 
 function startGame(){
+    
     createGrid();
-      //document.onkeydown = key_SelectDice;
+    createDice();
+    document.onkeydown = key_SelectDice;
 }
 
 
@@ -43,7 +51,7 @@ function startGame(){
 
 function createGrid(){
     
-    
+    ////CREATEBOARD
     let playZone = document.getElementById("playarea");
     let Arr = [];
     for ( let i = 0 ; i < 4 ; i++ ){
@@ -59,13 +67,34 @@ function createGrid(){
         }
         Arr.push(col);
     }
-    
         Grid =  Arr;
         updateView();
 }
 
+function createDice(){
+    let diceSet = [];
+    for ( let i = 1 ; i < 9 ; i++ ){
+        let die;
+        if ( i === 1){
+            die = new Dice( i , true , 1);
+        }
+        else if ( 2 <= i && i <=6 ) {
+            die = new Dice( i , false , i * 2 );
+        } 
+        else if ( i === 7) {
+            die = new Dice( i , false , 20 );
+        } 
+        else if ( i === 8) {
+            die = new Dice( i , false , 40 );
+        } 
+        diceSet.push(die);
+    }
+    DiceSelector = diceSet;
+    updateDiceSelectorView();
+}
 
-document.getElementById("four")
+
+
 
 
 function key_SelectDice(e){				
@@ -86,14 +115,60 @@ function key_SelectDice(e){
 
 
 function findDice(direction){
-let onDice = document.getElementsByClassName("onDice");
-let dice = onDice.id;
+   
+    
 
+let now = DiceSelector.filter(dice => dice.hover);
+//let index = DiceSelector.indexOf(now);
+if (now[0]){
+    currentDice = now[0];
+}
+let start = DiceSelector.indexOf(currentDice);
+let Did = currentDice.id;
+
+if ((direction === "left" && Did === "d1") ||( direction === "right" && Did === "d8" ) ){
+    return;
+} else if (direction === "right"){
+    currentDice.hover = false;
+    DiceSelector[start+1].hover = true;
+    
+    updateDiceSelectorView()
+}else if (direction === "left"){
+    currentDice.hover = false;
+    DiceSelector[start-1].hover = true;
+   
+    updateDiceSelectorView()
+}
+
+
+console.log(direction , currentDice.id );
+
+
+
+// if ( direction === "right"){
+//     currentDice.hover = false;
+//     DiceSelector[currentDice.id]
+// }
+
+
+updateDiceSelectorView()
+
+// userTile;
+// ArrayGrid.forEach(row => {
+//     let user = row.filter(tile => tile.user)
+//     if(user[0]) {
+//         //console.log('user tile=>', user)
+//         userTile = user[0];
+        
+//     }
+// });
+    
 }
 
 
 
 function rollDice(sides){
+
     var result = Math.floor(Math.random()*sides)+1;
     return result; 
 }
@@ -124,10 +199,11 @@ function getRandomDice(){
 
 
 
-function updateView(){
-        // console.log(playZone);
-        
 
+
+
+
+function updateView(){
         let playZone = document.getElementById("playarea");
         playZone.innerHTML = null;
         Grid.forEach(col => {
@@ -135,20 +211,38 @@ function updateView(){
                  var space = document.createElement(tile.element);
                 space.setAttribute('id', tile.id );
                 space.setAttribute("class", "tile");
-
                 playZone.append(space);
             })
         })
-    
-    
+}
 
 
+function updateDiceSelectorView(){
+    let diceZone = document.getElementById("buttonmap");
+    diceZone.innerHTML = null;
+    DiceSelector.forEach(space => {
+        var diceChoice = document.createElement(space.element);
+        diceChoice.setAttribute('id', space.id);
+        diceChoice.setAttribute("class", "dice");
+        diceChoice.innerHTML = space.value;
+
+        if ( space.hover === true){
+            diceChoice.classList.add("onDice");
+        }
+
+            diceZone.append(diceChoice);
+    })
 }
 
 
 
 
 
+
+
+
+
+///////// CLASSES   ///////////
 
 class Tile {
     constructor(i,j,isUser, isComp1, isComp2, isComp3, isEmpty, isStart, isEnd) {
@@ -164,10 +258,20 @@ class Tile {
         this.empty = isEmpty
         this.start = isStart
         this.end = isEnd
-        
-       
     }
     }
+
+
+
+class Dice {
+    constructor( i , isSelected, number){
+        this.id = `d${i}`;
+        this.element = "div";
+        this.class = "dice";
+        this.hover = isSelected
+        this.value = number
+    }
+}
 
 
 
