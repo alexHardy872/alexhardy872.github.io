@@ -13,21 +13,13 @@ let compCar3;
 
 
 window.onload = function(){
-
     OverlayOn();
-
-
     document.onkeydown = OverlayOff;
-
-
-    
-    
 
 };
 
 function OverlayOn() {
     document.getElementById("overlay").style.display = "block";
-
   }
   
 function OverlayOff(e) {
@@ -43,15 +35,6 @@ function startGame(){
     document.onkeydown = key_SelectDice;
 }
 
-
-
-
-
-
-
-
-
-
 function createGrid(){
     
     ////CREATEBOARD
@@ -61,12 +44,28 @@ function createGrid(){
         let col = [];
         let tile;
         for ( let j = 0 ; j < 100 ; j++ ){
+            if ( i === 0 && j === 0){
+                tile = new Tile( i, j, true, false, false, false, false, false, false);
+                col.push(tile);
+            } 
+            else if ( i === 1 && j === 0){
+                tile = new Tile( i, j, false, true, false, false, false, false, false);
+                col.push(tile);
+            } 
+            else if ( i === 2 && j === 0){
+                tile = new Tile( i, j, false, false, true, false, false, false, false);
+                col.push(tile);
+            } 
+            else if ( i === 3 && j === 0){
+                tile = new Tile( i, j, false, false, false, true, false, false, false);
+                col.push(tile);
+            } 
+            
+            else {
             tile = new Tile(i,j, false, false, false, false ,false, false, false);
-            //let tile = document.createElement("div");
-            //tile.setAttribute('class', 'empty');
-           // tile.setAttribute('id', `${i},${j}`);
-            //playZone.append(tile);
             col.push(tile);
+            }
+
         }
         Arr.push(col);
     }
@@ -205,6 +204,25 @@ function updateView(){
                  var space = document.createElement(tile.element);
                 space.setAttribute('id', tile.id );
                 space.setAttribute("class", "tile");
+
+                if (tile.user === true){
+                    space.classList.add("user");
+                }
+                else if (tile.comp1 === true){
+                    space.classList.add("comp1")
+                }
+                else if (tile.comp2 === true){
+                    space.classList.add("comp2")
+                }
+                else if (tile.comp3 === true){
+                    space.classList.add("comp3")
+                }
+
+
+
+
+
+
                 playZone.append(space);
             })
         })
@@ -248,9 +266,9 @@ class Tile {
         this.i = i;
         this.j = j; 
         this.user = isUser
-        this.comp = isComp1
-        this.comp = isComp2
-        this.comp = isComp3
+        this.comp1 = isComp1
+        this.comp2 = isComp2
+        this.comp3 = isComp3
         this.empty = isEmpty
         this.start = isStart
         this.end = isEnd
