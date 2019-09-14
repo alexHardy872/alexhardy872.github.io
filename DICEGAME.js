@@ -15,7 +15,11 @@ let compCar3;
 window.onload = function(){
 
     OverlayOn();
+
+
     document.onkeydown = OverlayOff;
+
+
     
     
 
@@ -26,15 +30,14 @@ function OverlayOn() {
 
   }
   
-function OverlayOff() {
+function OverlayOff(e) {
     document.getElementById("overlay").style.display = "none";
-    
+    e.preventDefault();
     startGame();
-
+    return;
 }
 
 function startGame(){
-    
     createGrid();
     createDice();
     document.onkeydown = key_SelectDice;
@@ -101,23 +104,29 @@ function key_SelectDice(e){
     var key_code = e.which||e.keyCode;
     switch(key_code){
         case 37: //left arrow key
+            e.preventDefault();
             findDice('left');
             break;
         case 39: //right arrow key
+            e.preventDefault();
             findDice('right');
             break;		
         case 32: // space bar
-            rollDice();
-            break;
+            e.preventDefault();
+            let now = DiceSelector.filter(dice => dice.hover);
+                if (now[0]){
+                currentDice = now[0];
+                rollDice(currentDice.value);
+                break;
+                }
     }
+    return;
 }
 
 
 
 function findDice(direction){
    
-    
-
 let now = DiceSelector.filter(dice => dice.hover);
 //let index = DiceSelector.indexOf(now);
 if (now[0]){
@@ -131,52 +140,37 @@ if ((direction === "left" && Did === "d1") ||( direction === "right" && Did === 
 } else if (direction === "right"){
     currentDice.hover = false;
     DiceSelector[start+1].hover = true;
-    
-    updateDiceSelectorView()
+    currentDice = DiceSelector[start+1];
 }else if (direction === "left"){
     currentDice.hover = false;
     DiceSelector[start-1].hover = true;
-   
-    updateDiceSelectorView()
+    currentDice = DiceSelector[start-1];
 }
-
-
-console.log(direction , currentDice.id );
-
-
-
-// if ( direction === "right"){
-//     currentDice.hover = false;
-//     DiceSelector[currentDice.id]
-// }
-
-
 updateDiceSelectorView()
-
-// userTile;
-// ArrayGrid.forEach(row => {
-//     let user = row.filter(tile => tile.user)
-//     if(user[0]) {
-//         //console.log('user tile=>', user)
-//         userTile = user[0];
-        
-//     }
-// });
-    
+return; 
 }
 
 
 
 function rollDice(sides){
-
-    var result = Math.floor(Math.random()*sides)+1;
+    let result;
+    if (sides === 1){
+        result = 1;
+    } else {
+        result = Math.floor(Math.random()*sides)+1;
+    }
+    console.log(sides);
+    console.log(result);
     return result; 
+
+    // SEND RESULT AND SIDES TO A MOVE FUNCTION?
 }
 
 
 ///////////// COMPUTER STUFF ///////////////
 
 function getRandomDice(){
+    
     let dieType = rollDice(6);
         if (dieType == 1){ // computer advance 1 space
         }
@@ -214,6 +208,7 @@ function updateView(){
                 playZone.append(space);
             })
         })
+        return;
 }
 
 
@@ -232,6 +227,7 @@ function updateDiceSelectorView(){
 
             diceZone.append(diceChoice);
     })
+    return;
 }
 
 
