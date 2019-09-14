@@ -1,9 +1,7 @@
 
 let Grid = [];
 let DiceSelector = []; 
-//let CurrentDice;
-
-
+let currentDice;
 let userCar;
 let compCar1;
 let compCar2;
@@ -37,8 +35,6 @@ function startGame(){
 
 function createGrid(){
     
-    ////CREATEBOARD
-    let playZone = document.getElementById("playarea");
     let Arr = [];
     for ( let i = 0 ; i < 4 ; i++ ){
         let col = [];
@@ -60,12 +56,10 @@ function createGrid(){
                 tile = new Tile( i, j, false, false, false, true, false, false, false);
                 col.push(tile);
             } 
-            
             else {
             tile = new Tile(i,j, false, false, false, false ,false, false, false);
             col.push(tile);
             }
-
         }
         Arr.push(col);
     }
@@ -160,9 +154,46 @@ function rollDice(sides){
     }
     console.log(sides);
     console.log(result);
-    return result; 
+    moveRacers(result, sides)
+}
 
-    // SEND RESULT AND SIDES TO A MOVE FUNCTION?
+
+function moveRacers(number, sides){
+
+    
+        let user = Grid[0].filter(tile => tile.user);
+        if (user[0]){
+            userCar = user[0];
+        }
+    
+
+    console.log(userCar);
+
+    let move = number - sides/2;
+
+    if ( sides === 1){
+        Grid[userCar.i][userCar.j].user = false;
+        Grid[userCar.i][userCar.j+1].user = true;
+    }
+    else if (move > 0){
+
+        if ( userCar.j + move > 99){
+            //ENDGAME
+        }
+
+
+    } else {
+
+        if ( Math.abs(move) >= userCar.j ){ // if to zero
+
+        } else { // or just subtract
+
+
+        }
+
+
+    }
+    updateView();
 }
 
 
