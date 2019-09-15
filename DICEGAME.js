@@ -152,22 +152,33 @@ function rollDice(sides){
     } else {
         result = Math.floor(Math.random()*sides)+1;
     }
-    console.log(sides);
-    console.log(result);
+    // console.log(sides);
+    // console.log(result);
     moveRacers(result, sides)
+}
+
+function rollDiceComp(sides){
+    let result;
+    if (sides === 1){
+        result = 1;
+    } else {
+        result = Math.floor(Math.random()*sides)+1;
+    }
+    // console.log(sides);
+    // console.log(result);
+    return result;
 }
 
 
 function moveRacers(number, sides){
 
-    
         let user = Grid[0].filter(tile => tile.user);
         if (user[0]){
             userCar = user[0];
         }
     
 
-    console.log(userCar);
+    //console.log(userCar);
 
     let move = number - sides/2;
 
@@ -179,21 +190,75 @@ function moveRacers(number, sides){
 
         if ( userCar.j + move > 99){
             //ENDGAME
+        } else {
+            Grid[userCar.i][userCar.j].user = false;
+            Grid[userCar.i][userCar.j+move].user = true;
         }
-
-
     } else {
 
         if ( Math.abs(move) >= userCar.j ){ // if to zero
-
+            Grid[userCar.i][userCar.j].user = false;
+            Grid[userCar.i][0].user = true;
         } else { // or just subtract
-
+            Grid[userCar.i][userCar.j].user = false;
+            Grid[userCar.i][userCar.j-Math.abs(move)].user = true;
 
         }
+    }
+    //debugger;
+    moveComputer(1 , getRandomDice() );
+    // moveComputer(2 , getRandomDice() );
+    // moveComputer(3 , getRandomDice() );
 
+
+
+
+    updateView();
+}
+
+function moveComputer(compN, sides){
+
+    let number = rollDiceComp(sides);
+
+    let comp = Grid[compN].filter(tile => tile.comp1);
+    if (comp[0]){
+
+        if (compN === 1){
+            compCar1 = comp[0];
+        }
+        else if (compN === 2){
+            compCar2 = comp[0];
+        }
+        else if (compN === 3){
+            compCar3 = comp[0];
+        }
+    }
+
+let move = number - sides/2;
+
+if ( sides === 1){
+    Grid[compCar1.i][compCar1.j].comp = false;
+    Grid[compCar1.i][compCar1.j+1].comp = true;
+}
+else if (move > 0){
+
+    if ( compCar1.j + move > 99){
+        //ENDGAME
+    } else {
+        Grid[compCar1.i][compCar1.j].comp1 = false;
+        Grid[compCar1.i][compCar1.j+move].comp1 = true;
+    }
+} else {
+
+    if ( Math.abs(move) >= compCar1.j ){ // if to zero
+        Grid[compCar1.i][compCar1.j].comp1 = false;
+        Grid[compCar1.i][0].comp1 = true;
+    } else { // or just subtract
+        Grid[compCar1.i][compCar1.j].comp1 = false;
+        Grid[compCar1.i][compCar1.j-Math.abs(move)].comp1 = true;
 
     }
-    updateView();
+}
 }
 
 
@@ -201,23 +266,30 @@ function moveRacers(number, sides){
 
 function getRandomDice(){
     
-    let dieType = rollDice(6);
+    let dieType = rollDiceComp(8);
         if (dieType == 1){ // computer advance 1 space
+            return 1;
         }
         else if (dieType == 2){ 
-            return rollDice(6); 
+            return 4; 
         }
         else if (dieType == 3){ 
-            return rollDice(10); 
+            return  6; 
         }
         else if (dieType == 4){ 
-            return rollDice(12); 
+            return  8; 
         }
         else if (dieType == 5){ 
-            return rollDice(20); 
+            return  10; 
         }
         else if (dieType == 6){ 
-            return rollDice(40); 
+            return  12; 
+        }
+        else if (dieType == 7){ 
+            return  20; 
+        }
+        else if (dieType == 8){ 
+            return  40; 
         }
 }
 
