@@ -181,6 +181,10 @@ function moveRacers(number, sides){
     //console.log(userCar);
 
     let move = number - sides/2;
+    if (sides === 1 ){
+        move = 1;
+    }
+    console.log(move);
 
     if ( sides === 1){
         Grid[userCar.i][userCar.j].user = false;
@@ -207,8 +211,8 @@ function moveRacers(number, sides){
     }
     //debugger;
     moveComputer(1 , getRandomDice() );
-    // moveComputer(2 , getRandomDice() );
-    // moveComputer(3 , getRandomDice() );
+    moveComputer(2 , getRandomDice() );
+    moveComputer(3 , getRandomDice() );
 
 
 
@@ -220,45 +224,101 @@ function moveComputer(compN, sides){
 
     let number = rollDiceComp(sides);
 
-    let comp = Grid[compN].filter(tile => tile.comp1);
-    if (comp[0]){
 
-        if (compN === 1){
-            compCar1 = comp[0];
-        }
-        else if (compN === 2){
-            compCar2 = comp[0];
-        }
-        else if (compN === 3){
-            compCar3 = comp[0];
-        }
-    }
 
 let move = number - sides/2;
 
-if ( sides === 1){
-    Grid[compCar1.i][compCar1.j].comp = false;
-    Grid[compCar1.i][compCar1.j+1].comp = true;
-}
-else if (move > 0){
 
-    if ( compCar1.j + move > 99){
-        //ENDGAME
+
+
+if (compN === 1){
+    let comp = Grid[compN].filter(tile => tile.comp1);
+    if (comp[0]){
+            compCar1 = comp[0];
+    }
+
+    if ( sides === 1){
+        Grid[compCar1.i][compCar1.j].comp1 = false;
+        Grid[compCar1.i][compCar1.j+1].comp1 = true;
+    }
+    else if (move > 0){
+    
+        if ( compCar1.j + move > 99){
+            //ENDGAME
+        } else {
+            Grid[compCar1.i][compCar1.j].comp1 = false;
+            Grid[compCar1.i][compCar1.j+move].comp1 = true;
+        }
     } else {
-        Grid[compCar1.i][compCar1.j].comp1 = false;
-        Grid[compCar1.i][compCar1.j+move].comp1 = true;
-    }
-} else {
-
-    if ( Math.abs(move) >= compCar1.j ){ // if to zero
-        Grid[compCar1.i][compCar1.j].comp1 = false;
-        Grid[compCar1.i][0].comp1 = true;
-    } else { // or just subtract
-        Grid[compCar1.i][compCar1.j].comp1 = false;
-        Grid[compCar1.i][compCar1.j-Math.abs(move)].comp1 = true;
-
+    
+        if ( Math.abs(move) >= compCar1.j ){ // if to zero
+            Grid[compCar1.i][compCar1.j].comp1 = false;
+            Grid[compCar1.i][0].comp1 = true;
+        } else { // or just subtract
+            Grid[compCar1.i][compCar1.j].comp1 = false;
+            Grid[compCar1.i][compCar1.j-Math.abs(move)].comp1 = true;
+    
+        }
     }
 }
+else if (compN === 2){
+    let comp = Grid[compN].filter(tile => tile.comp2);
+    if (comp[0]){
+            compCar2 = comp[0];
+    }
+    if ( sides === 1){
+        Grid[compCar2.i][compCar2.j].comp2 = false;
+        Grid[compCar2.i][compCar2.j+1].comp = true;
+    }
+    else if (move > 0){
+    
+        if ( compCar2.j + move > 99){
+            //ENDGAME
+        } else {
+            Grid[compCar2.i][compCar2.j].comp2 = false;
+            Grid[compCar2.i][compCar2.j+move].comp2 = true;
+        }
+    } else {
+    
+        if ( Math.abs(move) >= compCar2.j ){ // if to zero
+            Grid[compCar2.i][compCar2.j].comp2 = false;
+            Grid[compCar2.i][0].comp2 = true;
+        } else { // or just subtract
+            Grid[compCar2.i][compCar2.j].comp2 = false;
+            Grid[compCar2.i][compCar2.j-Math.abs(move)].comp2 = true;
+    
+        }
+    }
+} else if (compN === 3){
+    let comp = Grid[compN].filter(tile => tile.comp3);
+    if (comp[0]){
+            compCar3 = comp[0];
+    }
+    if ( sides === 1){
+        Grid[compCar3.i][compCar3.j].comp3 = false;
+        Grid[compCar3.i][compCar3.j+1].comp3 = true;
+    }
+    else if (move > 0){
+    
+        if ( compCar3.j + move > 99){
+            //ENDGAME
+        } else {
+            Grid[compCar3.i][compCar3.j].comp3 = false;
+            Grid[compCar3.i][compCar3.j+move].comp3 = true;
+        }
+    } else {
+    
+        if ( Math.abs(move) >= compCar3.j ){ // if to zero
+            Grid[compCar3.i][compCar3.j].comp3 = false;
+            Grid[compCar3.i][0].comp3 = true;
+        } else { // or just subtract
+            Grid[compCar3.i][compCar3.j].comp3 = false;
+            Grid[compCar3.i][compCar3.j-Math.abs(move)].comp3 = true;
+    
+        }
+    }
+}
+
 }
 
 
