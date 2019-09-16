@@ -120,27 +120,27 @@ function key_SelectDice(e){
 
 function findDice(direction){
    
-let now = DiceSelector.filter(dice => dice.hover);
-//let index = DiceSelector.indexOf(now);
-if (now[0]){
-    currentDice = now[0];
-}
-let start = DiceSelector.indexOf(currentDice);
-let Did = currentDice.id;
+    let now = DiceSelector.filter(dice => dice.hover);
+    //let index = DiceSelector.indexOf(now);
+    if (now[0]){
+        currentDice = now[0];
+    }
+    let start = DiceSelector.indexOf(currentDice);
+    let Did = currentDice.id;
 
-if ((direction === "left" && Did === "d1") ||( direction === "right" && Did === "d8" ) ){
-    return;
-} else if (direction === "right"){
-    currentDice.hover = false;
-    DiceSelector[start+1].hover = true;
-    currentDice = DiceSelector[start+1];
-}else if (direction === "left"){
-    currentDice.hover = false;
-    DiceSelector[start-1].hover = true;
-    currentDice = DiceSelector[start-1];
-}
-updateDiceSelectorView()
-return; 
+    if ((direction === "left" && Did === "d1") ||( direction === "right" && Did === "d8" ) ){
+        return;
+    } else if (direction === "right"){
+        currentDice.hover = false;
+        DiceSelector[start+1].hover = true;
+        currentDice = DiceSelector[start+1];
+    }else if (direction === "left"){
+        currentDice.hover = false;
+        DiceSelector[start-1].hover = true;
+        currentDice = DiceSelector[start-1];
+    }
+    updateDiceSelectorView()
+    return; 
 }
 
 
@@ -152,30 +152,20 @@ function rollDice(sides){
     } else {
         result = Math.floor(Math.random()*sides)+1;
     }
-    // console.log(sides);
-    // console.log(result);
+   
     moveRacers(result, sides)
 }
 
-function rollDiceComp(sides){
-    let result;
-    if (sides === 1){
-        result = 1;
-    } else {
-        result = Math.floor(Math.random()*sides)+1;
-    }
-    // console.log(sides);
-    // console.log(result);
-    return result;
-}
+
 
 
 function moveRacers(number, sides){
 
-        let user = Grid[0].filter(tile => tile.user);
-        if (user[0]){
-            userCar = user[0];
-        }
+    let win = null; 
+    let user = Grid[0].filter(tile => tile.user);
+    if (user[0]){
+        userCar = user[0];
+    }
     
 
     //console.log(userCar);
@@ -190,7 +180,7 @@ function moveRacers(number, sides){
         if (userCar.j + move > 99){
             Grid[userCar.i][userCar.j].user = false;
             Grid[userCar.i][99].user = true;
-            alert("win");
+            gameOver("user");
         }else{
         Grid[userCar.i][userCar.j].user = false;
         Grid[userCar.i][userCar.j+1].user = true;
@@ -202,7 +192,7 @@ function moveRacers(number, sides){
 
             Grid[userCar.i][userCar.j].user = false;
             Grid[userCar.i][99].user = true;
-            alert("win");
+            gameOver("user");
             //ENDGAME
         } else {
             Grid[userCar.i][userCar.j].user = false;
@@ -228,128 +218,9 @@ function moveRacers(number, sides){
 
 
     updateView();
+    
 }
 
-function moveComputer(compN, sides){
-
-    let number = rollDiceComp(sides);
-
-
-
-let move = number - sides/2;
-
-
-
-
-if (compN === 1){
-    let comp = Grid[compN].filter(tile => tile.comp1);
-    if (comp[0]){
-            compCar1 = comp[0];
-    }
-
-    if ( sides === 1){
-        if (compCar1.j + move > 99){
-            Grid[compCar1.i][compCar1.j].comp1 = false;
-            Grid[compCar1.i][99].comp1 = true;
-            alert("lose");
-        }else{
-        Grid[compCar1.i][compCar1.j].comp1 = false;
-        Grid[compCar1.i][compCar1.j+1].comp1 = true;
-        }
-    }
-    else if (move > 0){
-    
-        if ( parseInt(compCar1.j + move) > 99){
-            alert("lose");
-        } else {
-            Grid[compCar1.i][compCar1.j].comp1 = false;
-            Grid[compCar1.i][compCar1.j+move].comp1 = true;
-        }
-    } else {
-    
-        if ( Math.abs(move) >= compCar1.j ){ // if to zero
-            Grid[compCar1.i][compCar1.j].comp1 = false;
-            Grid[compCar1.i][0].comp1 = true;
-        } else { // or just subtract
-            Grid[compCar1.i][compCar1.j].comp1 = false;
-            Grid[compCar1.i][compCar1.j+move].comp1 = true;
-    
-        }
-    }
-}
-else if (compN === 2){
-    let comp = Grid[compN].filter(tile => tile.comp2);
-    if (comp[0]){
-            compCar2 = comp[0];
-    }
-    if ( sides === 1){
-        if (compCar2.j + move > 99){
-            Grid[compCar2.i][compCar2.j].comp2 = false;
-            Grid[compCar2.i][99].comp2 = true;
-            alert("lose");
-        }else{
-        Grid[compCar2.i][compCar2.j].comp2 = false;
-        Grid[compCar2.i][compCar2.j+1].comp2 = true;
-        }
-    }
-    else if (move > 0){
-    
-        if ( compCar2.j + move > 99){
-            alert("lose");
-            //ENDGAME
-        } else {
-            Grid[compCar2.i][compCar2.j].comp2 = false;
-            Grid[compCar2.i][compCar2.j+move].comp2 = true;
-        }
-    } else {
-    
-        if ( Math.abs(move) >= compCar2.j ){ // if to zero
-            Grid[compCar2.i][compCar2.j].comp2 = false;
-            Grid[compCar2.i][0].comp2 = true;
-        } else { // or just subtract
-            Grid[compCar2.i][compCar2.j].comp2 = false;
-            Grid[compCar2.i][compCar2.j+move].comp2 = true;
-    
-        }
-    }
-} else if (compN === 3){
-    let comp = Grid[compN].filter(tile => tile.comp3);
-    if (comp[0]){
-            compCar3 = comp[0];
-    }
-    if ( sides === 1){
-        if (compCar3.j + move > 99){
-            Grid[compCar3.i][compCar3.j].comp3 = false;
-            Grid[compCar3.i][99].comp3 = true;
-            alert("lose");
-        }else{
-        Grid[compCar3.i][compCar3.j].comp3 = false;
-        Grid[compCar3.i][compCar3.j+1].comp3 = true;
-        }
-    }
-    else if (move > 0){
-    
-        if ( compCar3.j + move > 99){
-            alert("lose");
-            //ENDGAME
-        } else {
-            Grid[compCar3.i][compCar3.j].comp3 = false;
-            Grid[compCar3.i][compCar3.j+move].comp3 = true;
-        }
-    } else {
-    
-        if ( Math.abs(move) >= compCar3.j ){ // if to zero
-            Grid[compCar3.i][compCar3.j].comp3 = false;
-            Grid[compCar3.i][0].comp3 = true;
-        } else { // or just subtract
-            Grid[compCar3.i][compCar3.j].comp3 = false;
-            Grid[compCar3.i][compCar3.j+move].comp3 = true;
-    
-        }
-    }
-}
-
-}
 
 
 ///////////// COMPUTER STUFF ///////////////
@@ -384,10 +255,158 @@ function getRandomDice(){
 }
 
 
+function moveComputer(compN, sides){
+
+    let number = rollDiceComp(sides);
+
+
+
+let move = number - sides/2;
 
 
 
 
+if (compN === 1){
+    let win = null;
+    let comp = Grid[compN].filter(tile => tile.comp1);
+    if (comp[0]){
+            compCar1 = comp[0];
+    }
+
+    if ( sides === 1){
+        if (compCar1.j + move > 99){
+            Grid[compCar1.i][compCar1.j].comp1 = false;
+            Grid[compCar1.i][99].comp1 = true;
+            gameOver("comp1");
+        }else{
+        Grid[compCar1.i][compCar1.j].comp1 = false;
+        Grid[compCar1.i][compCar1.j+1].comp1 = true;
+        }
+    }
+    else if (move > 0){
+    
+        if ( parseInt(compCar1.j + move) > 99){
+            gameOver("comp1");
+        } else {
+            Grid[compCar1.i][compCar1.j].comp1 = false;
+            Grid[compCar1.i][compCar1.j+move].comp1 = true;
+        }
+    } else {
+    
+        if ( Math.abs(move) >= compCar1.j ){ // if to zero
+            Grid[compCar1.i][compCar1.j].comp1 = false;
+            Grid[compCar1.i][0].comp1 = true;
+        } else { // or just subtract
+            Grid[compCar1.i][compCar1.j].comp1 = false;
+            Grid[compCar1.i][compCar1.j+move].comp1 = true;
+    
+        }
+    }
+}
+else if (compN === 2){
+    let comp = Grid[compN].filter(tile => tile.comp2);
+    if (comp[0]){
+            compCar2 = comp[0];
+    }
+    if ( sides === 1){
+        if (compCar2.j + move > 99){
+            Grid[compCar2.i][compCar2.j].comp2 = false;
+            Grid[compCar2.i][99].comp2 = true;
+            gameOver("comp2");
+        }else{
+        Grid[compCar2.i][compCar2.j].comp2 = false;
+        Grid[compCar2.i][compCar2.j+1].comp2 = true;
+        }
+    }
+    else if (move > 0){
+    
+        if ( compCar2.j + move > 99){
+            gameOver("comp2");
+            //ENDGAME
+        } else {
+            Grid[compCar2.i][compCar2.j].comp2 = false;
+            Grid[compCar2.i][compCar2.j+move].comp2 = true;
+        }
+    } else {
+    
+        if ( Math.abs(move) >= compCar2.j ){ // if to zero
+            Grid[compCar2.i][compCar2.j].comp2 = false;
+            Grid[compCar2.i][0].comp2 = true;
+        } else { // or just subtract
+            Grid[compCar2.i][compCar2.j].comp2 = false;
+            Grid[compCar2.i][compCar2.j+move].comp2 = true;
+    
+        }
+    }
+} else if (compN === 3){
+    let comp = Grid[compN].filter(tile => tile.comp3);
+    if (comp[0]){
+            compCar3 = comp[0];
+    }
+    if ( sides === 1){
+        if (compCar3.j + move > 99){
+            Grid[compCar3.i][compCar3.j].comp3 = false;
+            Grid[compCar3.i][99].comp3 = true;
+            gameOver("comp3");
+        }else{
+        Grid[compCar3.i][compCar3.j].comp3 = false;
+        Grid[compCar3.i][compCar3.j+1].comp3 = true;
+        }
+    }
+    else if (move > 0){
+    
+        if ( compCar3.j + move > 99){
+            gameOver("comp3");
+            //ENDGAME
+        } else {
+            Grid[compCar3.i][compCar3.j].comp3 = false;
+            Grid[compCar3.i][compCar3.j+move].comp3 = true;
+        }
+    } else {
+    
+        if ( Math.abs(move) >= compCar3.j ){ // if to zero
+            Grid[compCar3.i][compCar3.j].comp3 = false;
+            Grid[compCar3.i][0].comp3 = true;
+        } else { // or just subtract
+            Grid[compCar3.i][compCar3.j].comp3 = false;
+            Grid[compCar3.i][compCar3.j+move].comp3 = true;
+    
+        }
+    }
+    }
+
+    
+
+}
+
+function rollDiceComp(sides){
+    let result;
+    if (sides === 1){
+        result = 1;
+    } else {
+        result = Math.floor(Math.random()*sides)+1;
+    }
+    // console.log(sides);
+    // console.log(result);
+    return result;
+}
+
+
+
+function gameOver(winner){
+    if (winner === "user"){
+
+        //OverlayOn();
+        document.getElementById("overlay").innerHTML = "YOU WON! PRESS SIDE ARROWS TO PLAY AGAIN!"
+        window.onload();
+
+    } else {
+        //OverlayOn();
+        document.getElementById("overlay").innerHTML = "YOU LOST! "+winner+" WON! PRESS SIDE ARROWS TO PLAY AGAIN!"
+        window.onload();
+
+    }
+}
 
 function updateView(){
         let playZone = document.getElementById("playarea");
