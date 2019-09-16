@@ -416,7 +416,7 @@ function updateView(){
         playZone.innerHTML = null;
         Grid.forEach(col => {
             col.forEach(tile => {
-                 let space = document.createElement(tile.element);
+                 var space = document.createElement(tile.element);
                 space.setAttribute('id', tile.id );
                 space.setAttribute("class", "tile");
 
@@ -449,7 +449,7 @@ function updateDiceSelectorView(){
     let diceZone = document.getElementById("buttonmap");
     diceZone.innerHTML = null;
     DiceSelector.forEach(space => {
-        let diceChoice = document.createElement(space.element);
+        var diceChoice = document.createElement(space.element);
         diceChoice.setAttribute('id', space.id);
         diceChoice.setAttribute("class", "dice");
         diceChoice.innerHTML = space.value;
