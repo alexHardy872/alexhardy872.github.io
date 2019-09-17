@@ -47,6 +47,10 @@ body{
     
     border: 2px solid white;
     background-color: rgba(77, 76, 76, 0.685);
+
+    background-image: url('images/BoardBackground.jpg');
+    background-size: 80%;
+    background-position: center;
     height: 400px;
     width: 100%px;
     display: flex;
@@ -212,4 +216,23 @@ body{
     -webkit-text-stroke-width: 4px;
     -webkit-text-stroke-color: red;
   }
+
+
+  #ileft{
+      position: fixed;
+      float: left;
+      top: 20px;
+      z-index: -1;
+      width: 50%;
+      
+  }
   
+  #iright{
+    position: fixed;
+    right: 0;
+    float: right;
+    top: 20px;
+    z-index: -2;
+    width: 50%
+    
+}

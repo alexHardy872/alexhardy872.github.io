@@ -94,7 +94,6 @@ function startGame(e){
                 checkAllCars(DiceSelector, Grid);  
                 break;
         }
-        return;
     }
 
 
@@ -115,7 +114,7 @@ function checkAllCars(DiceSelector, Grid){    //CHECKS IF ANY CARS HAVE WON WITH
     let currentCar3 = moveRacers(rollDice(DiceSize) , DiceSize, "comp3", Grid, DiceSelector); //MOVE COMPUTER3
 
     if (currentCar.win === true){
-        debugger;
+        
         document.onkeydown = null;
         gameOver(currentCar.identity);
     } else if (currentCar1.win === true){
@@ -241,15 +240,22 @@ function gameOver(winner){
  
     if (winner === "user"){
         document.getElementById("OLhead").innerHTML = "YOU WON! "
-        console.log("win");
-        onOpen();
+        document.getElementById("OLhead2").innerHTML = "MASTER OF DICE!";
+        document.getElementById("overlay").style.display = "block";
+        setTimeout(restart, 2000);
         
         
     } else {
         document.getElementById("OLhead").innerHTML = "YOU LOST! "+winner+" WON! !" 
-        console.log("loss");
-        onOpen();
+        document.getElementById("OLhead2").innerHTML = "YOU NEVER HAD A CHANCE!";
+        document.getElementById("overlay").style.display = "block";
+        setTimeout(restart, 2000);
     }
+}
+
+function restart(){
+
+    location.reload();
 }
 
 function updateView(Grid){
