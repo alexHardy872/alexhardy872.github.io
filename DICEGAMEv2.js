@@ -1,14 +1,17 @@
 
-window.onload = function(){
+window.onload = onOpen;
+
+function onOpen(){
+    
     document.getElementById("overlay").style.display = "block";
     document.onkeydown = OverlayOff;
     document.onkeyup = startGame; 
 };
 
+
 function OverlayOff(e) {
     document.getElementById("overlay").style.display = "none";
-    e.preventDefault();
-    
+    e.preventDefault();  
 }
 
 function createGrid(){
@@ -18,23 +21,23 @@ function createGrid(){
         let tile;
         for ( let j = 0 ; j < 50 ; j++ ){
             if ( i === 0 && j === 0){
-                tile = new Tile( i, j, "user");
+                tile = new Tile( i, j, "user", false);
                 col.push(tile);
             } 
             else if ( i === 1 && j === 0){
-                tile = new Tile( i, j, "comp1");
+                tile = new Tile( i, j, "comp1", false);
                 col.push(tile);
             } 
             else if ( i === 2 && j === 0){
-                tile = new Tile( i, j, "comp2");
+                tile = new Tile( i, j, "comp2", false);
                 col.push(tile);
             } 
             else if ( i === 3 && j === 0){
-                tile = new Tile( i, j, "comp3");
+                tile = new Tile( i, j, "comp3", false);
                 col.push(tile);
             } 
             else {
-            tile = new Tile(i,j, "space");
+            tile = new Tile(i,j, "space", false);
             col.push(tile);
             }
         }
@@ -64,21 +67,14 @@ function createDice(){
     return diceSet;
 }
 
-
-
-
-
-function startGame(){
+function startGame(e){
+    e.preventDefault();
     document.onkeyup = null;
     let Grid = createGrid();
     let DiceSelector = createDice();
 
     updateView(Grid);
     updateDiceSelectorView(DiceSelector);
-
-
-
-    // while win = false of something? keep looping through function with update view
 
     document.onkeydown = key_SelectDice;
 
@@ -95,47 +91,48 @@ function startGame(){
                 break;		
             case 32: // space bar
                 e.preventDefault();
-
-                let now = DiceSelector.filter(dice => dice.hover);
-                if (now[0]){
-                currentDice = now[0];
-                let DiceSize = currentDice.value;
-                let roll = rollDice(DiceSize);
-                let newUserPosition = moveRacers(roll, DiceSize, "user" , Grid);   // MOVE USER
-                DiceSize = getRandomDice(DiceSelector);
-
-                moveRacers(rollDice(DiceSize) , DiceSize, "comp1", Grid); //MOVE COMPUTER1
-                DiceSize = getRandomDice(DiceSelector);
-
-                 moveRacers(rollDice(DiceSize) , DiceSize, "comp2", Grid);//MOVE COMPUTER2
-                DiceSize = getRandomDice(DiceSelector);
-
-                moveRacers(rollDice(DiceSize) , DiceSize, "comp3", Grid);//MOVE COMPUTER3
-
-                //checkForWins( newUserPosition , newComp1Position , newComp2Position , newComp3Position );
-                updateView(Grid);
+                checkAllCars(DiceSelector, Grid);  
                 break;
-
-                // let playerID;
-                //     for ( let t = 0 ; t < 3 ; t ++ ){
-                //         if ( t = 0 ){
-                //             playerID = "user";
-                //         }
-                //         else if ( t = 1){
-                //          playerID = "comp"+t;
-                //         }
-
-                //         console.log(playerID);
-                   // }
-
-
-
-                }       
         }
+        return;
     }
+
+
+    
 }
 
+function checkAllCars(DiceSelector, Grid){    //CHECKS IF ANY CARS HAVE WON WITHIN MOVE RACERS FUNCTION
+    let now = DiceSelector.filter(dice => dice.hover);
+    if (now[0]){
+     currentDice = now[0];
+    }
+    let DiceSize = currentDice.value;
+    let roll = rollDice(DiceSize);
 
+    let currentCar = moveRacers(roll, DiceSize, "user" , Grid, DiceSelector);   // MOVE USER
+    let currentCar1 = moveRacers(rollDice(DiceSize) , DiceSize, "comp1", Grid, DiceSelector); //MOVE COMPUTER1
+    let currentCar2 = moveRacers(rollDice(DiceSize) , DiceSize, "comp2", Grid, DiceSelector); //MOVE COMPUTER2
+    let currentCar3 = moveRacers(rollDice(DiceSize) , DiceSize, "comp3", Grid, DiceSelector); //MOVE COMPUTER3
+
+    if (currentCar.win === true){
+        debugger;
+        document.onkeydown = null;
+        gameOver(currentCar.identity);
+    } else if (currentCar1.win === true){
+        document.onkeydown = null;
+        gameOver(currentCar1.identity);
+    } else if (currentCar2.win === true){
+        document.onkeydown = null;
+        gameOver(currentCar2.identity);
+    } else if (currentCar3.win === true){
+        document.onkeydown = null;
+        gameOver(currentCar3.identity);
+    } else {
+        updateView(Grid);
+
+    }
+
+}
 
 function findDice(direction, DiceSelector){
     let currentDice;
@@ -162,8 +159,6 @@ function findDice(direction, DiceSelector){
     return currentDice.value;
 }
 
-
-
 function rollDice(sides){
     let result;
     if (sides === 1){
@@ -174,49 +169,43 @@ function rollDice(sides){
     return result;
 }
 
-
-
-
-function moveRacers(number, sides, playerID , Grid){
-
-
-
+function moveRacers(number, sides, playerID , Grid, DiceSelector){
     let row;
     if (playerID === "user"){
         row = 0;
     }
     else if (playerID === "comp1"){
+        sides = getRandomDice(DiceSelector);
+        number = rollDice(sides);
         row = 1;
     }
     else if (playerID === "comp2"){
+        sides = getRandomDice(DiceSelector);
+        number = rollDice(sides);
         row = 2;
     } else {
+        sides = getRandomDice(DiceSelector);
+        number = rollDice(sides);
         row = 3;
     }
-
-//debugger;
-
     let car = Grid[row].filter(tile => tile.identity === playerID);
     if (car[0]){
         currentCar = car[0];
     }
-    let move = number - sides/2;
-   
-    console.log(move);
-    let Position;
-
+    let move = number - (sides/2);
+    let winner = "";
+    console.log(playerID +" "+Math.ceil(move));
     
     if ( sides === 1){
         move = 1;
         if (currentCar.j + move > Grid[0].length-1){
             currentCar.identity = "space";
             Grid[currentCar.i][Grid[0].length-1].identity = playerID;
-            Position = Grid[currentCar.i][Grid[0].length-1];
-            //gameOver("user");
+            currentCar = Grid[currentCar.i][Grid[0].length-1];
+            currentCar.win = true;
         }else{
             currentCar.identity = "space";
-            Grid[currentCar.i][currentCar.j+1].identity = playerID;
-            Position = Grid[currentCar.i][Grid[0].length+1];
+            Grid[currentCar.i][currentCar.j+move].identity = playerID;
         }
     }
     else if (move > 0){
@@ -224,45 +213,42 @@ function moveRacers(number, sides, playerID , Grid){
 
             currentCar.identity = "space";
             Grid[currentCar.i][Grid[0].length-1].identity = playerID;
-            Position = Grid[currentCar.i][Grid[0].length-1];
-            //gameOver("user"); 
+            currentCar = Grid[currentCar.i][Grid[0].length-1];
+            currentCar.win = true;
         } else {
             currentCar.identity = "space";
             Grid[currentCar.i][currentCar.j+move].identity = playerID;
-            Position = Grid[currentCar.i][currentCar.j+move];
         }
     } else {
         if ( Math.abs(move) >= currentCar.j ){ // if to zero
             currentCar.identity = "space";
             Grid[currentCar.i][0].identity = playerID;
-            Position = Grid[currentCar.i][0];
         } else { // or just subtract
             currentCar.identity = "space";
             Grid[currentCar.i][currentCar.j-Math.abs(move)].identity = playerID;
-            Position = Grid[currentCar.i][currentCar.j-Math.abs(move)];
         }
     }
-    //return Grid; 
+    return currentCar;
 }
 
 function getRandomDice(DiceSelector){
-    //debugger;
         let randomNum = rollDice(DiceSelector.length);
         let randomDice = DiceSelector[randomNum-1].value;
-
         return randomDice
-   
 }
 
 function gameOver(winner){
+ 
     if (winner === "user"){
-        //OverlayOn();
         document.getElementById("OLhead").innerHTML = "YOU WON! "
-        window.onload();
+        console.log("win");
+        onOpen();
+        
+        
     } else {
-        //OverlayOn();
-        document.getElementById("OLhead").innerHTML = "YOU LOST! "+winner+" WON! !"  
-        window.onload();
+        document.getElementById("OLhead").innerHTML = "YOU LOST! "+winner+" WON! !" 
+        console.log("loss");
+        onOpen();
     }
 }
 
@@ -271,15 +257,13 @@ function updateView(Grid){
         playZone.innerHTML = null;
         Grid.forEach(col => {
             col.forEach(tile => {
-
                  let space = document.createElement(tile.element);
                 space.setAttribute('id', tile.id );
                 space.setAttribute("class", "tile");
                 space.classList.add(tile.identity);
                 playZone.append(space);
             })
-        })
-        
+        })   
 }
 
 
@@ -299,13 +283,14 @@ function updateDiceSelectorView(DiceSelector){
 }
 
 class Tile {
-    constructor(i,j, identity) {
+    constructor(i,j, identity, hasWon) {
         this.id = `${i},${j}`;
         this.element ="div";
        // this.class = "empty";
         this.i = i;
         this.j = j; 
         this.identity = identity  
+        this.win = hasWon
     }
     }
 
