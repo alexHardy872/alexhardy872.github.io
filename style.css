@@ -3,7 +3,7 @@ html{
 }
 
 body{
-    background-color:grey;
+    /*background-color:grey;*/
     padding-top: 0;
     padding-bottom: 10%;
     background-image: linear-gradient(to bottom right, black, green);
@@ -46,9 +46,9 @@ body{
 #playarea {
     
     border: 2px solid white;
-    background-color: rgba(77, 76, 76, 0.685);
-
-    background-image: url('images/BoardBackground.jpg');
+    background-color: rgba(18, 51, 18, 0.877);
+  
+    background-image: url('images/BoardTrans.png');
     background-size: 80%;
     background-position: center;
     height: 400px;
@@ -84,21 +84,27 @@ body{
 .tile{
     height: 25%;
     width: 2%;
-    background-color: rgba(110, 245, 178, 0.26);
+    /*background-color: rgba(110, 245, 178, 0.26); */
+    background: transparent;
+    
 }
 
 .user{
     background-color: red;
+    border: 1px solid white;
   
 }
 .comp1{
     background-color: rgb(0, 0, 255);
+    border: 1px solid white;
 }
 .comp2{
     background-color: yellow;
+    border: 1px solid white;
 }
 .comp3{
     background-color: pink;
+    border: 1px solid white;
 }
 
 
@@ -131,6 +137,11 @@ body{
     font-size: 32pt;
     -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: rgb(2, 2, 2);
+    border-radius: 20%;
+
+    background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0.616), rgba(0, 0, 0, 0.411));
+    border: 5px solid rgb(0, 0, 0);
+
 }
 #d1{background-color: teal;}
 #d2{background-color:green;}
@@ -142,11 +153,12 @@ body{
 #d8{background-color: purple;}
 
 .onDice{
-    border: 5px solid white;
+    
     text-shadow: 4px 4px black;
     color: white;
     font-size: 42pt;
-    background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0.212), rgba(0, 0, 0, 0.411));
+    background-image: none;
+    
     
 }
 
@@ -158,6 +170,16 @@ body{
     font-size: 16pt;
 }
 
+#dispMove{
+    position: absolute;
+    float: right;
+    right: 10px;
+    top: 0;
+    font-size: 48pt;
+}
+
+
+
 
 
 
@@ -166,9 +188,11 @@ body{
 
 #instructions {
     width: 100%;
-  
+  padding-bottom: 10px;
     background-color: rgba(245, 245, 245, 0.473);
     font-weight: bold;
+    border: solid 2px white;
+    background-image: linear-gradient(to bottom right, black, green);
 }
 
 #instructions > p {
@@ -224,6 +248,7 @@ body{
       top: 20px;
       z-index: -1;
       width: 50%;
+      height: 100%
       
   }
   
@@ -233,6 +258,7 @@ body{
     float: right;
     top: 20px;
     z-index: -2;
-    width: 50%
+    width: 50%;
+    height: 100%;
     
 }

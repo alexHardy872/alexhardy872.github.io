@@ -192,6 +192,26 @@ function moveRacers(number, sides, playerID , Grid, DiceSelector){
         currentCar = car[0];
     }
     let move = number - (sides/2);
+//////// COLOR SHOW SCORE /////////
+    if (playerID === "user"){
+        let display = document.getElementById("dispMove");
+        if (move === 0){
+            display.innerHTML = move;
+            display.style = "color: yellow;"
+        }
+        else if (move > 0){
+            display.innerHTML = move;
+            display.style = "color: lime;";
+        }
+        else{
+            display.innerHTML = move;
+            display.style = "color: red;";
+        }
+
+
+
+    }
+
     let winner = "";
     console.log(playerID +" "+Math.ceil(move));
     
@@ -242,14 +262,14 @@ function gameOver(winner){
         document.getElementById("OLhead").innerHTML = "YOU WON! "
         document.getElementById("OLhead2").innerHTML = "MASTER OF DICE!";
         document.getElementById("overlay").style.display = "block";
-        setTimeout(restart, 2000);
+        setTimeout(restart, 1800);
         
         
     } else {
         document.getElementById("OLhead").innerHTML = "YOU LOST! "+winner+" WON! !" 
         document.getElementById("OLhead2").innerHTML = "YOU NEVER HAD A CHANCE!";
         document.getElementById("overlay").style.display = "block";
-        setTimeout(restart, 2000);
+        setTimeout(restart, 1800);
     }
 }
 
