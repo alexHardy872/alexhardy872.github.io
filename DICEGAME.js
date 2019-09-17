@@ -1,3 +1,5 @@
+"use strict"
+
 
 let Grid = [];
 let DiceSelector = []; 
@@ -267,7 +269,7 @@ let move = number - sides/2;
 
 
 if (compN === 1){
-    let win = null;
+    
     let comp = Grid[compN].filter(tile => tile.comp1);
     if (comp[0]){
             compCar1 = comp[0];

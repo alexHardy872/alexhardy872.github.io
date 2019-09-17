@@ -1,70 +1,79 @@
 
-let Grid = [];
-let DiceSelector = []; 
-let currentDice;
-let userCar;
-let compCar1;
-let compCar2;
-let compCar3;
-
-
-
 
 window.onload = function(){
-    OverlayOn();
+    document.getElementById("overlay").style.display = "block";
     document.onkeydown = OverlayOff;
-
+    document.onkeyup = startGame; 
 };
 
-function OverlayOn() {
-    document.getElementById("overlay").style.display = "block";
-  }
-  
+
 function OverlayOff(e) {
     document.getElementById("overlay").style.display = "none";
     e.preventDefault();
-    startGame();
-    return;
+    
 }
 
 function startGame(){
-    createGrid();
-    createDice();
+    let Grid = createGrid();
+    let DiceSelector = createDice();
+
+    
+
+    updateView(Grid);
+    updateDiceSelectorView(DiceSelector);
+
+
+
     document.onkeydown = key_SelectDice;
+
+    debugger;
+
+    let action = key_SelectDice;
+
+    console.log(action);
+
+
+    //let diceSides = findDice(key_SelectDice(),DiceSelector), currentDicePosition);
+    
+
+    // result rollDice(sides)
+    // result and sides into move racer pass in identity as well and grid
+    // moveRacer (result, sides, identity, grid)
+    // updateView();
+
+
 }
 
 function createGrid(){
-    
     let Arr = [];
     for ( let i = 0 ; i < 4 ; i++ ){
         let col = [];
         let tile;
         for ( let j = 0 ; j < 50 ; j++ ){
             if ( i === 0 && j === 0){
-                tile = new Tile( i, j, true, false, false, false, false, false, false);
+                tile = new Tile( i, j, "user");
                 col.push(tile);
             } 
             else if ( i === 1 && j === 0){
-                tile = new Tile( i, j, false, true, false, false, false, false, false);
+                tile = new Tile( i, j, "comp1");
                 col.push(tile);
             } 
             else if ( i === 2 && j === 0){
-                tile = new Tile( i, j, false, false, true, false, false, false, false);
+                tile = new Tile( i, j, "comp2");
                 col.push(tile);
             } 
             else if ( i === 3 && j === 0){
-                tile = new Tile( i, j, false, false, false, true, false, false, false);
+                tile = new Tile( i, j, "comp3");
                 col.push(tile);
             } 
             else {
-            tile = new Tile(i,j, false, false, false, false ,false, false, false);
+            tile = new Tile(i,j, "empty");
             col.push(tile);
             }
         }
         Arr.push(col);
     }
-        Grid =  Arr;
-        updateView();
+        return Arr;
 }
 
 function createDice(){
@@ -85,43 +94,38 @@ function createDice(){
         } 
         diceSet.push(die);
     }
-    DiceSelector = diceSet;
-    updateDiceSelectorView();
+    return diceSet;
 }
 
 
-
-
-
-function key_SelectDice(e){				
-    var key_code = e.which||e.keyCode;
+function key_SelectDice(e){			
+    
+    let action = "";
+    let key_code = e.which||e.keyCode;
     switch(key_code){
         case 37: //left arrow key
             e.preventDefault();
-            findDice('left');
+            action = "left";
             break;
         case 39: //right arrow key
             e.preventDefault();
-            findDice('right');
+            action = "right";
             break;		
         case 32: // space bar
             e.preventDefault();
-            let now = DiceSelector.filter(dice => dice.hover);
-                if (now[0]){
-                currentDice = now[0];
-                rollDice(currentDice.value);
-                break;
-                }
+            action = "select";
+                break;         
     }
-    return;
+    return action;
 }
 
 
 
-function findDice(direction){
-   
+function findDice(direction, DiceSelector){
+    
+    let currentDice;
     let now = DiceSelector.filter(dice => dice.hover);
-    //let index = DiceSelector.indexOf(now);
+    
     if (now[0]){
         currentDice = now[0];
     }
@@ -139,8 +143,7 @@ function findDice(direction){
         DiceSelector[start-1].hover = true;
         currentDice = DiceSelector[start-1];
     }
-    updateDiceSelectorView()
-    return; 
+    return currentDice.value;
 }
 
 
@@ -152,341 +155,137 @@ function rollDice(sides){
     } else {
         result = Math.floor(Math.random()*sides)+1;
     }
-   
-    moveRacers(result, sides)
-}
-
-
-
-
-function moveRacers(number, sides){
-
-    
-    let user = Grid[0].filter(tile => tile.user);
-    if (user[0]){
-        userCar = user[0];
-    }
-    
-
-    //console.log(userCar);
-
-    let move = number - sides/2;
-    if (sides === 1 ){
-        move = 1;
-    }
-    console.log(move);
-
-    if ( sides === 1){
-        if (userCar.j + move > Grid[0].length-1){
-            Grid[userCar.i][userCar.j].user = false;
-            Grid[userCar.i][Grid[0].length-1].user = true;
-            gameOver("user");
-        }else{
-        Grid[userCar.i][userCar.j].user = false;
-        Grid[userCar.i][userCar.j+1].user = true;
-        }
-    }
-    else if (move > 0){
-
-        if ( userCar.j + move > Grid[0].length-1){
-
-            Grid[userCar.i][userCar.j].user = false;
-            Grid[userCar.i][Grid[0].length-1].user = true;
-            gameOver("user");
-            //ENDGAME
-        } else {
-            Grid[userCar.i][userCar.j].user = false;
-            Grid[userCar.i][userCar.j+move].user = true;
-        }
-    } else {
-
-        if ( Math.abs(move) >= userCar.j ){ // if to zero
-            Grid[userCar.i][userCar.j].user = false;
-            Grid[userCar.i][0].user = true;
-        } else { // or just subtract
-            Grid[userCar.i][userCar.j].user = false;
-            Grid[userCar.i][userCar.j-Math.abs(move)].user = true;
-
-        }
-    }
-    //debugger;
-    moveComputer(1 , getRandomDice() );
-    moveComputer(2 , getRandomDice() );
-    moveComputer(3 , getRandomDice() );
-
-
-
-
-    updateView();
-    
-}
-
-
-
-///////////// COMPUTER STUFF ///////////////
-
-function getRandomDice(){
-    
-    let dieType = rollDiceComp(8);
-        if (dieType == 1){ // computer advance 1 space
-            return 1;
-        }
-        else if (dieType == 2){ 
-            return 4; 
-        }
-        else if (dieType == 3){ 
-            return  6; 
-        }
-        else if (dieType == 4){ 
-            return  8; 
-        }
-        else if (dieType == 5){ 
-            return  10; 
-        }
-        else if (dieType == 6){ 
-            return  12; 
-        }
-        else if (dieType == 7){ 
-            return  20; 
-        }
-        else if (dieType == 8){ 
-            return  40; 
-        }
-}
-
-
-function moveComputer(compN, sides){
-
-    let number = rollDiceComp(sides);
-
-
-
-let move = number - sides/2;
-
-
-
-
-if (compN === 1){
-    let win = null;
-    let comp = Grid[compN].filter(tile => tile.comp1);
-    if (comp[0]){
-            compCar1 = comp[0];
-    }
-
-    if ( sides === 1){
-        if (compCar1.j + move > Grid[0].length-1){
-            Grid[compCar1.i][compCar1.j].comp1 = false;
-            Grid[compCar1.i][Grid[0].length-1].comp1 = true;
-            gameOver("comp1");
-        }else{
-        Grid[compCar1.i][compCar1.j].comp1 = false;
-        Grid[compCar1.i][compCar1.j+1].comp1 = true;
-        }
-    }
-    else if (move > 0){
-    
-        if ( parseInt(compCar1.j + move) > Grid[0].length-1){
-            gameOver("comp1");
-        } else {
-            Grid[compCar1.i][compCar1.j].comp1 = false;
-            Grid[compCar1.i][compCar1.j+move].comp1 = true;
-        }
-    } else {
-    
-        if ( Math.abs(move) >= compCar1.j ){ // if to zero
-            Grid[compCar1.i][compCar1.j].comp1 = false;
-            Grid[compCar1.i][0].comp1 = true;
-        } else { // or just subtract
-            Grid[compCar1.i][compCar1.j].comp1 = false;
-            Grid[compCar1.i][compCar1.j+move].comp1 = true;
-    
-        }
-    }
-}
-else if (compN === 2){
-    let comp = Grid[compN].filter(tile => tile.comp2);
-    if (comp[0]){
-            compCar2 = comp[0];
-    }
-    if ( sides === 1){
-        if (compCar2.j + move > Grid[0].length-1){
-            Grid[compCar2.i][compCar2.j].comp2 = false;
-            Grid[compCar2.i][Grid[0].length-1].comp2 = true;
-            gameOver("comp2");
-        }else{
-        Grid[compCar2.i][compCar2.j].comp2 = false;
-        Grid[compCar2.i][compCar2.j+1].comp2 = true;
-        }
-    }
-    else if (move > 0){
-    
-        if ( compCar2.j + move > Grid[0].length-1){
-            gameOver("comp2");
-            //ENDGAME
-        } else {
-            Grid[compCar2.i][compCar2.j].comp2 = false;
-            Grid[compCar2.i][compCar2.j+move].comp2 = true;
-        }
-    } else {
-    
-        if ( Math.abs(move) >= compCar2.j ){ // if to zero
-            Grid[compCar2.i][compCar2.j].comp2 = false;
-            Grid[compCar2.i][0].comp2 = true;
-        } else { // or just subtract
-            Grid[compCar2.i][compCar2.j].comp2 = false;
-            Grid[compCar2.i][compCar2.j+move].comp2 = true;
-    
-        }
-    }
-} else if (compN === 3){
-    let comp = Grid[compN].filter(tile => tile.comp3);
-    if (comp[0]){
-            compCar3 = comp[0];
-    }
-    if ( sides === 1){
-        if (compCar3.j + move > Grid[0].length-1){
-            Grid[compCar3.i][compCar3.j].comp3 = false;
-            Grid[compCar3.i][Grid[0].length-1].comp3 = true;
-            gameOver("comp3");
-        }else{
-        Grid[compCar3.i][compCar3.j].comp3 = false;
-        Grid[compCar3.i][compCar3.j+1].comp3 = true;
-        }
-    }
-    else if (move > 0){
-    
-        if ( compCar3.j + move > Grid[0].length-1){
-            gameOver("comp3");
-            //ENDGAME
-        } else {
-            Grid[compCar3.i][compCar3.j].comp3 = false;
-            Grid[compCar3.i][compCar3.j+move].comp3 = true;
-        }
-    } else {
-    
-        if ( Math.abs(move) >= compCar3.j ){ // if to zero
-            Grid[compCar3.i][compCar3.j].comp3 = false;
-            Grid[compCar3.i][0].comp3 = true;
-        } else { // or just subtract
-            Grid[compCar3.i][compCar3.j].comp3 = false;
-            Grid[compCar3.i][compCar3.j+move].comp3 = true;
-    
-        }
-    }
-    }
-
-    
-
-}
-
-function rollDiceComp(sides){
-    let result;
-    if (sides === 1){
-        result = 1;
-    } else {
-        result = Math.floor(Math.random()*sides)+1;
-    }
-    // console.log(sides);
-    // console.log(result);
     return result;
 }
 
 
 
+
+function moveRacer(number, sides, playerID , Grid){
+
+    let row;
+    if (playerID === "user"){
+        row = 0;
+    }
+    else if (playerID === "comp1"){
+        row = 1;
+    }
+    else if (playerID === "comp2"){
+        row = 2;
+    } else {
+        row = 3;
+    }
+
+
+    let car = Grid[row].filter(tile => tile.identity);
+    if (car[0]){
+        currentCar = car[0];
+    }
+    let move = number - sides/2;
+    if (sides === 1 ){
+        move = 1;
+    }
+    console.log(move);
+    let Position;
+
+    if ( sides === 1){
+        if (currentCar.j + move > Grid[0].length-1){
+            Grid[currentCar.i][currentCar.j].identity = "empty";
+            Grid[currentCar.i][Grid[0].length-1].identity = playerID;
+            Position = Grid[currentCar.i][Grid[0].length-1];
+            //gameOver("user");
+        }else{
+        Grid[currentCar.i][currentCar.j].identity = "empty";
+        Grid[currentCar.i][currentCar.j+1].identity = playerID;
+        Position = Grid[currentCar.i][Grid[0].length+1];
+        }
+    }
+    else if (move > 0){
+        if ( currentCar.j + move > Grid[0].length-1){
+
+            Grid[currentCar.i][currentCar.j].identity = "empty";
+            Grid[currentCar.i][Grid[0].length-1].identity = playerID;
+            Position = Grid[currentCar.i][Grid[0].length-1];
+            //gameOver("user"); 
+        } else {
+            Grid[currentCar.i][currentCar.j].identity = "empty";
+            Grid[currentCar.i][currentCar.j+move].identity = playerID;
+            Position = Grid[currentCar.i][currentCar.j+move];
+        }
+    } else {
+        if ( Math.abs(move) >= currentCar.j ){ // if to zero
+            Grid[currentCar.i][currentCar.j].user = "empty";
+            Grid[currentCar.i][0].identity = playerID;
+            Position = Grid[currentCar.i][0];
+        } else { // or just subtract
+            Grid[currentCar.i][currentCar.j].identity = "empty";
+            Grid[currentCar.i][currentCar.j-Math.abs(move)].identity = playerID;
+            Position = Grid[currentCar.i][currentCar.j-Math.abs(move)];
+        }
+    }
+    return Position; 
+}
+
+function getRandomDice(DiceSelector){
+    
+        let randomNum = rollDice(DiceSelector.length);
+        let randomDice = DiceSelector[randomNum].value;
+
+        return randomDice
+   
+}
+
 function gameOver(winner){
     if (winner === "user"){
-
         //OverlayOn();
         document.getElementById("OLhead").innerHTML = "YOU WON! "
-       
-
         window.onload();
-
     } else {
         //OverlayOn();
-        document.getElementById("OLhead").innerHTML = "YOU LOST! "+winner+" WON! !"
-        
+        document.getElementById("OLhead").innerHTML = "YOU LOST! "+winner+" WON! !"  
         window.onload();
-
     }
 }
 
-function updateView(){
+function updateView(Grid){
         let playZone = document.getElementById("playarea");
         playZone.innerHTML = null;
         Grid.forEach(col => {
             col.forEach(tile => {
-                 var space = document.createElement(tile.element);
+                 let space = document.createElement(tile.element);
                 space.setAttribute('id', tile.id );
                 space.setAttribute("class", "tile");
-
-                if (tile.user === true){
-                    space.classList.add("user");
-                }
-                else if (tile.comp1 === true){
-                    space.classList.add("comp1")
-                }
-                else if (tile.comp2 === true){
-                    space.classList.add("comp2")
-                }
-                else if (tile.comp3 === true){
-                    space.classList.add("comp3")
-                }
-
-
-
-
-
-
+                   space.classList.add(tile.identity);
                 playZone.append(space);
             })
         })
-        return;
 }
 
 
-function updateDiceSelectorView(){
+function updateDiceSelectorView(DiceSelector){
     let diceZone = document.getElementById("buttonmap");
     diceZone.innerHTML = null;
     DiceSelector.forEach(space => {
-        var diceChoice = document.createElement(space.element);
+        let diceChoice = document.createElement(space.element);
         diceChoice.setAttribute('id', space.id);
         diceChoice.setAttribute("class", "dice");
         diceChoice.innerHTML = space.value;
-
         if ( space.hover === true){
             diceChoice.classList.add("onDice");
         }
-
             diceZone.append(diceChoice);
     })
-    return;
 }
 
 
-
-
-
-
-
-
-
-///////// CLASSES   ///////////
-
 class Tile {
-    constructor(i,j,isUser, isComp1, isComp2, isComp3, isEmpty, isStart, isEnd) {
+    constructor(i,j, identity) {
         this.id = `${i},${j}`;
         this.element ="div";
         this.class = "empty";
         this.i = i;
         this.j = j; 
-        this.user = isUser
-        this.comp1 = isComp1
-        this.comp2 = isComp2
-        this.comp3 = isComp3
-        this.empty = isEmpty
-        this.start = isStart
-        this.end = isEnd
+        this.identity = identity  
     }
     }
 
@@ -501,27 +300,6 @@ class Dice {
         this.value = number
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
