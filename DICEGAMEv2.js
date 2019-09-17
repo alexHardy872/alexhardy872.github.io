@@ -3,7 +3,7 @@ window.onload = onOpen;
 
 function onOpen(){
     
-    document.getElementById("overlay").style.display = "block";
+    //document.getElementById("overlay").style.display = "block";
     document.onkeydown = OverlayOff;
     document.onkeyup = startGame; 
 };
@@ -193,6 +193,10 @@ function moveRacers(number, sides, playerID , Grid, DiceSelector){
     }
     let move = number - (sides/2);
 //////// COLOR SHOW SCORE /////////
+    if (sides === 1){
+        move = 1;
+    }
+
     if (playerID === "user"){
         let display = document.getElementById("dispMove");
         if (move === 0){
