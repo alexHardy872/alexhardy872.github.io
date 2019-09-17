@@ -1,47 +1,14 @@
 
-
 window.onload = function(){
     document.getElementById("overlay").style.display = "block";
     document.onkeydown = OverlayOff;
     document.onkeyup = startGame; 
 };
 
-
 function OverlayOff(e) {
     document.getElementById("overlay").style.display = "none";
     e.preventDefault();
     
-}
-
-function startGame(){
-    let Grid = createGrid();
-    let DiceSelector = createDice();
-
-    
-
-    updateView(Grid);
-    updateDiceSelectorView(DiceSelector);
-
-
-
-    document.onkeydown = key_SelectDice;
-
-    debugger;
-
-    let action = key_SelectDice;
-
-    console.log(action);
-
-
-    //let diceSides = findDice(key_SelectDice(),DiceSelector), currentDicePosition);
-    
-
-    // result rollDice(sides)
-    // result and sides into move racer pass in identity as well and grid
-    // moveRacer (result, sides, identity, grid)
-    // updateView();
-
-
 }
 
 function createGrid(){
@@ -98,30 +65,69 @@ function createDice(){
 }
 
 
-function key_SelectDice(e){			
+
+
+
+function startGame(){
+    document.onkeyup = null;
+    let Grid = createGrid();
+    let DiceSelector = createDice();
+
+    updateView(Grid);
+    updateDiceSelectorView(DiceSelector);
+
+
+
+    // while win = false of something? keep looping through function with update view
+
+    document.onkeydown = key_SelectDice;
+
+    function key_SelectDice(e){			
     
-    let action = "";
-    let key_code = e.which||e.keyCode;
-    switch(key_code){
-        case 37: //left arrow key
-            e.preventDefault();
-            action = "left";
-            break;
-        case 39: //right arrow key
-            e.preventDefault();
-            action = "right";
-            break;		
-        case 32: // space bar
-            e.preventDefault();
-            action = "select";
-                break;         
+       
+        let key_code = e.which||e.keyCode;
+        switch(key_code){
+            case 37: //left arrow key
+                e.preventDefault();
+                findDice("left",DiceSelector);
+                break;
+            case 39: //right arrow key
+                e.preventDefault();
+                findDice("right",DiceSelector)
+                break;		
+            case 32: // space bar
+                e.preventDefault();
+                
+                    break;         
+        }
     }
-    return action;
+
+
+
+
+
+    
+
+
+
+    //let diceSides = findDice(key_SelectDice(),DiceSelector), currentDicePosition);
+    
+
+    // result rollDice(sides)
+    // result and sides into move racer pass in identity as well and grid
+    // moveRacer (result, sides, identity, grid)
+    // updateView();
+
+
 }
 
 
 
+
+
+
 function findDice(direction, DiceSelector){
+
     
     let currentDice;
     let now = DiceSelector.filter(dice => dice.hover);
@@ -143,6 +149,7 @@ function findDice(direction, DiceSelector){
         DiceSelector[start-1].hover = true;
         currentDice = DiceSelector[start-1];
     }
+    updateDiceSelectorView(DiceSelector);
     return currentDice.value;
 }
 
@@ -161,7 +168,7 @@ function rollDice(sides){
 
 
 
-function moveRacer(number, sides, playerID , Grid){
+function moveRacers(number, sides, playerID , Grid){
 
     let row;
     if (playerID === "user"){
@@ -277,7 +284,6 @@ function updateDiceSelectorView(DiceSelector){
     })
 }
 
-
 class Tile {
     constructor(i,j, identity) {
         this.id = `${i},${j}`;
@@ -290,14 +296,13 @@ class Tile {
     }
 
 
-
 class Dice {
-    constructor( i , isSelected, number){
+    constructor( i , isSelected, sides){
         this.id = `d${i}`;
         this.element = "div";
         this.class = "dice";
         this.hover = isSelected
-        this.value = number
+        this.value = sides
     }
 }
 
