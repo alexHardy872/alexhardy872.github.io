@@ -34,7 +34,7 @@ function createGrid(){
                 col.push(tile);
             } 
             else {
-            tile = new Tile(i,j, "empty");
+            tile = new Tile(i,j, "space");
             col.push(tile);
             }
         }
@@ -83,8 +83,6 @@ function startGame(){
     document.onkeydown = key_SelectDice;
 
     function key_SelectDice(e){			
-    
-       
         let key_code = e.which||e.keyCode;
         switch(key_code){
             case 37: //left arrow key
@@ -97,38 +95,49 @@ function startGame(){
                 break;		
             case 32: // space bar
                 e.preventDefault();
-                
-                    break;         
+
+                let now = DiceSelector.filter(dice => dice.hover);
+                if (now[0]){
+                currentDice = now[0];
+                let DiceSize = currentDice.value;
+                let roll = rollDice(DiceSize);
+                let newUserPosition = moveRacers(roll, DiceSize, "user" , Grid);   // MOVE USER
+                DiceSize = getRandomDice(DiceSelector);
+
+                moveRacers(rollDice(DiceSize) , DiceSize, "comp1", Grid); //MOVE COMPUTER1
+                DiceSize = getRandomDice(DiceSelector);
+
+                 moveRacers(rollDice(DiceSize) , DiceSize, "comp2", Grid);//MOVE COMPUTER2
+                DiceSize = getRandomDice(DiceSelector);
+
+                moveRacers(rollDice(DiceSize) , DiceSize, "comp3", Grid);//MOVE COMPUTER3
+
+                //checkForWins( newUserPosition , newComp1Position , newComp2Position , newComp3Position );
+                updateView(Grid);
+                break;
+
+                // let playerID;
+                //     for ( let t = 0 ; t < 3 ; t ++ ){
+                //         if ( t = 0 ){
+                //             playerID = "user";
+                //         }
+                //         else if ( t = 1){
+                //          playerID = "comp"+t;
+                //         }
+
+                //         console.log(playerID);
+                   // }
+
+
+
+                }       
         }
     }
-
-
-
-
-
-    
-
-
-
-    //let diceSides = findDice(key_SelectDice(),DiceSelector), currentDicePosition);
-    
-
-    // result rollDice(sides)
-    // result and sides into move racer pass in identity as well and grid
-    // moveRacer (result, sides, identity, grid)
-    // updateView();
-
-
 }
 
 
 
-
-
-
 function findDice(direction, DiceSelector){
-
-    
     let currentDice;
     let now = DiceSelector.filter(dice => dice.hover);
     
@@ -170,6 +179,8 @@ function rollDice(sides){
 
 function moveRacers(number, sides, playerID , Grid){
 
+
+
     let row;
     if (playerID === "user"){
         row = 0;
@@ -183,60 +194,61 @@ function moveRacers(number, sides, playerID , Grid){
         row = 3;
     }
 
+//debugger;
 
-    let car = Grid[row].filter(tile => tile.identity);
+    let car = Grid[row].filter(tile => tile.identity === playerID);
     if (car[0]){
         currentCar = car[0];
     }
     let move = number - sides/2;
-    if (sides === 1 ){
-        move = 1;
-    }
+   
     console.log(move);
     let Position;
 
+    
     if ( sides === 1){
+        move = 1;
         if (currentCar.j + move > Grid[0].length-1){
-            Grid[currentCar.i][currentCar.j].identity = "empty";
+            currentCar.identity = "space";
             Grid[currentCar.i][Grid[0].length-1].identity = playerID;
             Position = Grid[currentCar.i][Grid[0].length-1];
             //gameOver("user");
         }else{
-        Grid[currentCar.i][currentCar.j].identity = "empty";
-        Grid[currentCar.i][currentCar.j+1].identity = playerID;
-        Position = Grid[currentCar.i][Grid[0].length+1];
+            currentCar.identity = "space";
+            Grid[currentCar.i][currentCar.j+1].identity = playerID;
+            Position = Grid[currentCar.i][Grid[0].length+1];
         }
     }
     else if (move > 0){
         if ( currentCar.j + move > Grid[0].length-1){
 
-            Grid[currentCar.i][currentCar.j].identity = "empty";
+            currentCar.identity = "space";
             Grid[currentCar.i][Grid[0].length-1].identity = playerID;
             Position = Grid[currentCar.i][Grid[0].length-1];
             //gameOver("user"); 
         } else {
-            Grid[currentCar.i][currentCar.j].identity = "empty";
+            currentCar.identity = "space";
             Grid[currentCar.i][currentCar.j+move].identity = playerID;
             Position = Grid[currentCar.i][currentCar.j+move];
         }
     } else {
         if ( Math.abs(move) >= currentCar.j ){ // if to zero
-            Grid[currentCar.i][currentCar.j].user = "empty";
+            currentCar.identity = "space";
             Grid[currentCar.i][0].identity = playerID;
             Position = Grid[currentCar.i][0];
         } else { // or just subtract
-            Grid[currentCar.i][currentCar.j].identity = "empty";
+            currentCar.identity = "space";
             Grid[currentCar.i][currentCar.j-Math.abs(move)].identity = playerID;
             Position = Grid[currentCar.i][currentCar.j-Math.abs(move)];
         }
     }
-    return Position; 
+    //return Grid; 
 }
 
 function getRandomDice(DiceSelector){
-    
+    //debugger;
         let randomNum = rollDice(DiceSelector.length);
-        let randomDice = DiceSelector[randomNum].value;
+        let randomDice = DiceSelector[randomNum-1].value;
 
         return randomDice
    
@@ -259,13 +271,15 @@ function updateView(Grid){
         playZone.innerHTML = null;
         Grid.forEach(col => {
             col.forEach(tile => {
+
                  let space = document.createElement(tile.element);
                 space.setAttribute('id', tile.id );
                 space.setAttribute("class", "tile");
-                   space.classList.add(tile.identity);
+                space.classList.add(tile.identity);
                 playZone.append(space);
             })
         })
+        
 }
 
 
@@ -288,7 +302,7 @@ class Tile {
     constructor(i,j, identity) {
         this.id = `${i},${j}`;
         this.element ="div";
-        this.class = "empty";
+       // this.class = "empty";
         this.i = i;
         this.j = j; 
         this.identity = identity  

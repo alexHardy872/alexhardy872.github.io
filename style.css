@@ -70,6 +70,13 @@ body{
     background-color: rgba(90, 90, 29, 0.726);
 }
 
+
+.space{
+    height: 25%;
+    width: 2%;
+    background-color: rgba(110, 245, 178, 0.26);
+
+}
 .tile{
     height: 25%;
     width: 2%;
