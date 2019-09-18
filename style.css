@@ -135,6 +135,7 @@ body{
     padding-top: 5px;
     border: 5px solid transparent;
     font-size: 32pt;
+    color: rgba(255, 255, 255, 0.603);
     -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: rgb(2, 2, 2);
     border-radius: 20%;
